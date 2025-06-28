@@ -1,0 +1,76 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<vector<int>> grid = {
+    {9, 0, 6, 0, 7, 0, 4, 0, 3},
+    {0, 0, 0, 4, 0, 0, 2, 0, 0},
+    {0, 7, 0, 0, 2, 3, 0, 1, 0},
+    {5, 0, 0, 0, 0, 0, 1, 0, 0},
+    {0, 4, 0, 2, 0, 8, 0, 6, 0},
+    {0, 0, 3, 0, 0, 0, 0, 0, 5},
+    {0, 3, 0, 7, 0, 0, 0, 5, 0},
+    {0, 0, 7, 0, 0, 5, 0, 0, 0},
+    {4, 0, 5, 0, 1, 0, 7, 0, 8}
+};
+
+bool possible(int row, int column, int number) {
+    // Check if the number appears in the given row
+    for (int i = 0; i < 9; i++) {
+        if (grid[row][i] == number) {
+            return false;
+        }
+    }
+
+    // Check if the number appears in the given column
+    for (int i = 0; i < 9; i++) {
+        if (grid[i][column] == number) {
+            return false;
+        }
+    }
+
+    // Check if the number appears in the given 3x3 square
+    int x = (column / 3) * 3;
+    int y = (row / 3) * 3;
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (grid[y + i][x + j] == number) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+void solve() {
+    for (int row = 0; row < 9; row++) {
+        for (int column = 0; column < 9; column++) {
+            if (grid[row][column] == 0) {
+                for (int number = 1; number <= 9; number++) {
+                    if (possible(row, column, number)) {
+                        grid[row][column] = number;
+                        solve();
+                        grid[row][column] = 0;  // backtrack
+                    }
+                }
+                return;  // Return if no number can be placed
+            }
+        }
+    }
+
+    // Print the solved grid
+    for (const auto& row : grid) {
+        for (int num : row) {
+            cout << num << " ";
+        }
+        cout << endl;
+    }
+    cout << "Press ENTER to see more possible solutions..." << endl;
+    cin.get();  // Wait for user input
+}
+
+int main() {
+    solve();
+    return 0;
+}
